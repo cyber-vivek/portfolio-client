@@ -6,6 +6,7 @@ from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
 import gspread
 import requests
+from datetime import datetime
 import json
 
 # Create your views here.
@@ -32,6 +33,8 @@ def get_form(request):
     worksheet = sh.sheet1
     client_ip, is_routable = get_client_ip(request)
     response = requests.get(f'https://ipapi.co/{client_ip}/json/').json()
-    data = [client_ip,response.get("city"),response.get("region"),response.get("country_name"),response.get("postal"),response.get("latitude"),response.get("longitude"),response.get("org")]
+    now = datetime.now()
+    dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+    data = [client_ip,dt_string,response.get("city"),response.get("region"),response.get("country_name"),response.get("postal"),response.get("latitude"),response.get("longitude"),response.get("org")]
     worksheet.append_row(data)
     return Response("HELLO ")
