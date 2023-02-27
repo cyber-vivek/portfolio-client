@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
 import gspread
-# import './static/credentials.json'
+import requests
 import json
 
 # Create your views here.
@@ -31,6 +31,7 @@ def get_form(request):
     sh = gc.open_by_url('https://docs.google.com/spreadsheets/d/1xlP--BQTO_bxVy3p-l_-sLL-cL7XhxQdNfPl-r8sEOM/edit#gid=0')
     worksheet = sh.sheet1
     client_ip, is_routable = get_client_ip(request)
-    data = [client_ip]
+    response = requests.get(f'https://ipapi.co/{client_ip}/json/').json()
+    data = [client_ip,response.get("city"),response.get("region"),response.get("country_name"),response.get("postal"),response.get("latitude"),response.get("longitude"),response.get("org")]
     worksheet.append_row(data)
     return Response("HELLO ")
